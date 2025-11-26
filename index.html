@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doodle Run - Create Running Routes from Drawings</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏃 Doodle Run</h1>
+            <p>Draw or upload an image, and we'll create a running route that traces it!</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Step 1: Draw or Upload -->
+            <section class="step" id="step1">
+                <h2>Step 1: Create Your Doodle</h2>
+                <div class="canvas-container">
+                    <canvas id="drawCanvas" width="400" height="400"></canvas>
+                </div>
+                <div class="controls">
+                    <button id="clearBtn">Clear Canvas</button>
+                    <input type="file" id="imageUpload" accept="image/*">
+                    <label for="imageUpload" class="btn">Upload Image</label>
+                </div>
+            </section>
+
+            <!-- Step 2: Set Location & Distance -->
+            <section class="step" id="step2">
+                <h2>Step 2: Configure Route</h2>
+                <div class="config-panel">
+                    <div class="input-group">
+                        <label for="distance">Target Distance (km):</label>
+                        <input type="number" id="distance" value="5" min="1" max="50" step="0.1">
+                    </div>
+                    
+                    <div class="location-search">
+                        <label>Find Starting Location:</label>
+                        <div class="search-controls">
+                            <input type="text" id="locationSearch" placeholder="Enter city, address, or landmark...">
+                            <button id="searchLocation" class="btn">Search</button>
+                            <button id="useCurrentLocation" class="btn">📍 Use Current Location</button>
+                        </div>
+                    </div>
+
+                    <div class="coordinates-group">
+                        <div class="input-group">
+                            <label for="startLat">Start Latitude:</label>
+                            <input type="number" id="startLat" value="40.7128" step="0.0001">
+                        </div>
+                        <div class="input-group">
+                            <label for="startLng">Start Longitude:</label>
+                            <input type="number" id="startLng" value="-74.0060" step="0.0001">
+                        </div>
+                    </div>
+                    
+                    <button id="generateBtn" class="btn-primary">Generate Route</button>
+                    <p class="info-text">⚠️ Route will be snapped to roads and sidewalks for safe running</p>
+                </div>
+            </section>
+
+            <!-- Step 3: Preview Route -->
+            <section class="step" id="step3">
+                <h2>Step 3: Preview & Download</h2>
+                <div id="map"></div>
+                <div id="routeInfo" class="info-panel">
+                    <h3>Route Information</h3>
+                    <p><strong>Total Distance:</strong> <span id="totalDistance">-</span> km</p>
+                    <p><strong>Number of Points:</strong> <span id="numPoints">-</span></p>
+                    <p><strong>Estimated Time (5 min/km):</strong> <span id="estimatedTime">-</span></p>
+                </div>
+                <div class="controls">
+                    <button id="downloadGPX" class="btn-primary">Download GPX</button>
+                    <button id="downloadTCX" class="btn">Download TCX</button>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/imageProcessor.js"></script>
+    <script src="js/routeGenerator.js"></script>
+    <script src="js/gpxExporter.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
