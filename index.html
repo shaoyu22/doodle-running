@@ -32,31 +32,63 @@
             <section class="step" id="step2">
                 <h2>Step 2: Configure Route</h2>
                 <div class="config-panel">
-                    <div class="input-group">
-                        <label for="distance">Target Distance (km):</label>
-                        <input type="number" id="distance" value="5" min="1" max="50" step="0.1">
-                    </div>
-                    
-                    <div class="location-search">
-                        <label>Find Starting Location:</label>
-                        <div class="search-controls">
-                            <input type="text" id="locationSearch" placeholder="Enter city, address, or landmark...">
-                            <button id="searchLocation" class="btn">Search</button>
-                            <button id="useCurrentLocation" class="btn">📍 Use Current Location</button>
+
+                    <!-- Unit toggle -->
+                    <div class="unit-toggle-row">
+                        <span class="unit-toggle-label">Units:</span>
+                        <div class="unit-toggle">
+                            <button id="unitKm" class="unit-btn active">km</button>
+                            <button id="unitMi" class="unit-btn">mi</button>
                         </div>
                     </div>
 
-                    <div class="coordinates-group">
-                        <div class="input-group">
-                            <label for="startLat">Start Latitude:</label>
-                            <input type="number" id="startLat" value="40.7128" step="0.0001">
-                        </div>
-                        <div class="input-group">
-                            <label for="startLng">Start Longitude:</label>
-                            <input type="number" id="startLng" value="-74.0060" step="0.0001">
+                    <!-- Distance -->
+                    <div class="input-group">
+                        <label for="distance">Target Distance (<span class="unit-label">km</span>):</label>
+                        <input type="number" id="distance" value="5" min="0.5" max="100" step="0.1">
+                    </div>
+
+                    <!-- Pace -->
+                    <div class="input-group pace-group">
+                        <label>Estimated Pace (<span class="unit-label">km</span>):</label>
+                        <div class="pace-controls">
+                            <div class="pace-input-wrap">
+                                <input type="number" id="paceMin" value="5" min="1" max="59" step="1" class="pace-input">
+                                <span class="pace-sep">min</span>
+                            </div>
+                            <div class="pace-input-wrap">
+                                <input type="number" id="paceSec" value="0" min="0" max="59" step="1" class="pace-input">
+                                <span class="pace-sep">sec</span>
+                            </div>
+                            <span class="pace-unit">/ <span class="unit-label">km</span></span>
                         </div>
                     </div>
-                    
+
+                    <!-- Start Point -->
+                    <div class="location-search">
+                        <label>Start Point:</label>
+                        <div class="search-controls">
+                            <input type="text" id="startSearch" placeholder="Enter start address or landmark...">
+                            <button id="searchStart" class="btn">Search</button>
+                            <button id="useCurrentLocation" class="btn">📍 My Location</button>
+                        </div>
+                        <div id="startResult" class="location-result"></div>
+                    </div>
+
+                    <!-- End Point with nearby dropdown -->
+                    <div class="location-search">
+                        <label>End Point: <span class="label-hint">(optional — searches near start)</span></label>
+                        <div class="search-controls">
+                            <div class="autocomplete-wrap">
+                                <input type="text" id="endSearch" placeholder="Enter end address or landmark...">
+                                <ul id="endDropdown" class="location-dropdown"></ul>
+                            </div>
+                            <button id="searchEnd" class="btn">Search</button>
+                            <button id="clearEnd" class="btn btn-ghost">✕ Clear</button>
+                        </div>
+                        <div id="endResult" class="location-result"></div>
+                    </div>
+
                     <button id="generateBtn" class="btn-primary">Generate Route</button>
                     <p class="info-text">⚠️ Route will be snapped to roads and sidewalks for safe running</p>
                 </div>
@@ -68,9 +100,17 @@
                 <div id="map"></div>
                 <div id="routeInfo" class="info-panel">
                     <h3>Route Information</h3>
-                    <p><strong>Total Distance:</strong> <span id="totalDistance">-</span> km</p>
-                    <p><strong>Number of Points:</strong> <span id="numPoints">-</span></p>
-                    <p><strong>Estimated Time (5 min/km):</strong> <span id="estimatedTime">-</span></p>
+                    <div class="distance-row">
+                        <div>
+                            <p><strong>Total Distance:</strong> <span id="totalDistanceDisplay">-</span></p>
+                            <p><strong>Target Distance:</strong> <span id="targetDistanceInfo">-</span></p>
+                        </div>
+                        <div id="distanceWarning" class="distance-warning" style="display:none">
+                            ⚠️ Difference from target: <span id="distanceDiff">-</span>
+                        </div>
+                    </div>
+                    <p><strong>Route:</strong> <span id="routeDescription">-</span></p>
+                    <p><strong>Estimated Time:</strong> <span id="estimatedTime">-</span> <span class="pace-note" id="paceNote"></span></p>
                 </div>
                 <div class="controls">
                     <button id="downloadGPX" class="btn-primary">Download GPX</button>
